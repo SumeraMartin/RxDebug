@@ -10,6 +10,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import org.junit.Assert
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,6 +27,12 @@ internal class TestClass {
 
     private val tagName = "TestClass"
     private val testException = RuntimeException("TestException")
+
+    @Before
+    fun setUp() {
+        // Set to default state
+        RxDebug.setLoggingEnabled(true)
+    }
 
     //region Observable tests
 
@@ -697,6 +704,92 @@ internal class TestClass {
                 .hasNoMoreMessages()
     }
 
+    //endregion
+
+    //region Logging enabled/disabled tests
+    @Test
+    fun `RxDebug with disabled debug will log nothing for observable`() {
+        // GIVEN
+        RxDebug.setLoggingEnabled(false)
+
+        // WHEN
+        Observable.just("A", "B", "C")
+                .debug()
+                .subscribe()
+
+        // THEN
+        assertLog().hasNoMoreMessages()
+    }
+
+    @Test
+    fun `RxDebug with disabled debug will log nothing for error`() {
+        // GIVEN
+        RxDebug.setLoggingEnabled(false)
+
+        // WHEN
+        Observable.error<RuntimeException>(testException)
+                .debug()
+                .subscribe({}, {})
+
+        // THEN
+        assertLog().hasNoMoreMessages()
+    }
+
+    @Test
+    fun `RxDebug with disabled debug will log nothing for flowable`() {
+        // GIVEN
+        RxDebug.setLoggingEnabled(false)
+
+        // WHEN
+        Flowable.just("A", "B", "C")
+                .debug()
+                .subscribe()
+
+        // THEN
+        assertLog().hasNoMoreMessages()
+    }
+
+    @Test
+    fun `RxDebug with disabled debug will log nothing for single`() {
+        // GIVEN
+        RxDebug.setLoggingEnabled(false)
+
+        // WHEN
+        Single.just("A")
+                .debug()
+                .subscribe()
+
+        // THEN
+        assertLog().hasNoMoreMessages()
+    }
+
+    @Test
+    fun `RxDebug with disabled debug will log nothing for maybe`() {
+        // GIVEN
+        RxDebug.setLoggingEnabled(false)
+
+        // WHEN
+        Maybe.just("A")
+                .debug()
+                .subscribe()
+
+        // THEN
+        assertLog().hasNoMoreMessages()
+    }
+
+    @Test
+    fun `RxDebug with disabled debug will log nothing for completable`() {
+        // GIVEN
+        RxDebug.setLoggingEnabled(false)
+
+        // WHEN
+        Completable.complete()
+                .debug()
+                .subscribe()
+
+        // THEN
+        assertLog().hasNoMoreMessages()
+    }
     //endregion
 
     private fun assertLog(): LogAssert {

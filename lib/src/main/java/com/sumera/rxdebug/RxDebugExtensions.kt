@@ -92,6 +92,26 @@ fun Completable.debug(tag: String? = null): Completable {
             .doOnDispose { DebugLogger.log("OnDispose", tag = formattedTag) }
 }
 
+/**
+ * Global settings of RxDebug extensions
+ */
+object RxDebug {
+
+    internal val isLoggingEnabled: Boolean
+        get() = isLoggingEnabledInternal
+
+    private var isLoggingEnabledInternal = true
+
+    /**
+     * Globally enable/disable logs for [debug] methods
+     *
+     * @param isLoggindEnabled true if logging should be enabled, false otherwise
+     */
+    fun setLoggingEnabled(isLoggindEnabled: Boolean) {
+        this.isLoggingEnabledInternal = isLoggindEnabled
+    }
+}
+
 internal object StackTraceTagCreator {
 
     private const val MAX_TAG_LENGTH = 23
@@ -141,28 +161,28 @@ internal object DebugLogger {
 
     private const val MAX_LOG_LENGTH = 4000
 
-    fun <E> log(title: String, value: E, tag: String) {
-        DebugLogger.logObject(title, value, tag)
-    }
-
     fun log(title: String, tag: String) {
-        DebugLogger.logTitle(title, tag)
-    }
+        if (RxDebug.isLoggingEnabled.not()) {
+            return
+        }
 
-    fun log(title: String, error: Throwable, tag: String) {
-        DebugLogger.logError(title, error, tag)
-    }
-
-    private fun logTitle(title: String, tag: String) {
         DebugLogger.logInternal(title, "", tag)
     }
 
-    private fun <E> logObject(title: String, value: E, tag: String) {
+    fun <E> log(title: String, value: E, tag: String) {
+        if (RxDebug.isLoggingEnabled.not()) {
+            return
+        }
+
         val message = value.toString()
         DebugLogger.logInternal(title, message, tag)
     }
 
-    private fun logError(title: String, error: Throwable, tag: String) {
+    fun log(title: String, error: Throwable, tag: String) {
+        if (RxDebug.isLoggingEnabled.not()) {
+            return
+        }
+
         val message = getStackTraceString(error)
         DebugLogger.logInternal(title, message, tag)
     }
