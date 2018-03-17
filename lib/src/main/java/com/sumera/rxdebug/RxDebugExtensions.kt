@@ -60,14 +60,18 @@ fun Completable.debug(tag: String? = null): Completable {
 internal object StackTraceTagCreator {
 
     private const val MAX_TAG_LENGTH = 23
-    private const val CALL_STACK_INDEX = 3
+
+    private const val CALL_STACK_INDEX_FOR_METHOD_WITHOUT_TAG = 4
+
+    private const val CALL_STACK_INDEX_FOR_METHOD_WITH_TAG = 3
+
     private val ANONYMOUS_CLASS = Pattern.compile("(\\$\\d+)+$")
 
     fun getFormattedTag(tag: String?): String {
         return if (tag == null) {
-            StackTraceTagCreator.getStacktraceTag(atIndex = 4)
+            StackTraceTagCreator.getStacktraceTag(atIndex = CALL_STACK_INDEX_FOR_METHOD_WITHOUT_TAG)
         } else {
-            val stackTraceTag = StackTraceTagCreator.getStacktraceTag(atIndex = 3)
+            val stackTraceTag = StackTraceTagCreator.getStacktraceTag(atIndex = CALL_STACK_INDEX_FOR_METHOD_WITH_TAG)
             "$stackTraceTag: $tag"
         }
     }
@@ -75,8 +79,7 @@ internal object StackTraceTagCreator {
     private fun getStacktraceTag(atIndex: Int): String {
         val stackTrace = Throwable().stackTrace
         if (stackTrace.size <= atIndex) {
-            throw IllegalStateException(
-                    "Synthetic stacktrace didn't have enough elements: are you using proguard?")
+            throw IllegalStateException("Synthetic stacktrace didn't have enough elements: are you using proguard?")
         }
         return createStackElementTag(stackTrace[atIndex])
     }
