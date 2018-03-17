@@ -12,7 +12,7 @@ Observable.just("One", "Two", "Three")
 
 This will produce the following output to log:
 
-![Console without tag](images/log_without_tag.png)
+<img src="images/log_without_tag.png" width="800">
 
 OR
 
@@ -24,6 +24,6 @@ Observable.just("One", "Two", "Three")
 
 This will produce the following output to log:
 
-![Console without tag](images/log_with_tag.png)
+<img src="images/log_with_tag.png" width="800">
 
 All RxJava2 stream types are supported _(Observable, Flowable, Single, Maybe, Completable)_
