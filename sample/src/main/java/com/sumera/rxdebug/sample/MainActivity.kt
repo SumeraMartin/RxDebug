@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.with_tag_button).setOnClickListener {
-            Observable.just("First", "Second", "Third")
+            Observable.just("One", "Two", "Three")
                     .debug(tag = "Words")
                     .subscribe()
         }
