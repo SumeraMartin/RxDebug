@@ -12,6 +12,13 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.regex.Pattern
 
+/**
+ * A [io.reactivex.Observable] debug extension that will log an useful information from this stream
+ *
+ * Logged events: (doOnSubscribe, doOnNext, doOnError, doOnComplete, doOnTerminate, doOnDispose)
+ *
+ * @param tag Optional argument that will add an additional tag into the log
+ */
 fun <E> Observable<E>.debug(tag: String? = null): Observable<E> {
     val formattedTag = getFormattedTag(tag)
     return doOnNext { DebugLogger.log("OnNext", value = it, tag = formattedTag) }
@@ -22,6 +29,13 @@ fun <E> Observable<E>.debug(tag: String? = null): Observable<E> {
             .doOnComplete { DebugLogger.log("OnComplete", tag = formattedTag) }
 }
 
+/**
+ * A [io.reactivex.Flowable] debug extension that will log an useful information from this stream
+ *
+ * Logged events: (doOnSubscribe, doOnNext, doOnError, doOnComplete, doOnTerminate, doOnCancel)
+ *
+ * @param tag Optional argument that will add an additional tag into the log
+ */
 fun <E> Flowable<E>.debug(tag: String? = null): Flowable<E> {
     val formattedTag = getFormattedTag(tag)
     return doOnNext { DebugLogger.log("OnNext", value = it, tag = formattedTag) }
@@ -32,6 +46,13 @@ fun <E> Flowable<E>.debug(tag: String? = null): Flowable<E> {
             .doOnCancel { DebugLogger.log("OnCancel", tag = formattedTag) }
 }
 
+/**
+ * A [io.reactivex.Single] debug extension that will log an useful information from this stream
+ *
+ * Logged events: (doOnSubscribe, doOnSuccess, doOnError, doOnDispose)
+ *
+ * @param tag Optional argument that will add an additional tag into the log
+ */
 fun <E> Single<E>.debug(tag: String? = null): Single<E> {
     val formattedTag = getFormattedTag(tag)
     return doOnSuccess { DebugLogger.log("OnSuccess", value = it, tag = formattedTag) }
@@ -40,6 +61,13 @@ fun <E> Single<E>.debug(tag: String? = null): Single<E> {
             .doOnDispose { DebugLogger.log("OnDispose", tag = formattedTag) }
 }
 
+/**
+ * A [io.reactivex.Maybe] debug extension that will log an useful information from this stream
+ *
+ * Logged events: (doOnSubscribe, doOnSuccess, doOnError, doOnComplete, doOnDispose)
+ *
+ * @param tag Optional argument that will add an additional tag into the log
+ */
 fun <E> Maybe<E>.debug(tag: String? = null): Maybe<E> {
     val formattedTag = getFormattedTag(tag)
     return doOnSuccess { DebugLogger.log("OnSuccess", value = it, tag = formattedTag) }
@@ -49,6 +77,13 @@ fun <E> Maybe<E>.debug(tag: String? = null): Maybe<E> {
             .doOnDispose { DebugLogger.log("OnDispose", tag = formattedTag) }
 }
 
+/**
+ * A [io.reactivex.Completable] debug extension that will log an useful information from this stream
+ *
+ * Logged events: (doOnSubscribe, doOnError, doOnComplete, doOnDispose)
+ *
+ * @param tag Optional argument that will add an additional tag into the log
+ */
 fun Completable.debug(tag: String? = null): Completable {
     val formattedTag = getFormattedTag(tag)
     return doOnError { DebugLogger.log("OnError", error = it, tag = formattedTag) }
