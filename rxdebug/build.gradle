@@ -1,0 +1,65 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
+
+ext {
+    bintrayRepo = 'RxDebug'
+    bintrayName = 'RxDebug'
+
+    publishedGroupId = 'com.sumera.rxdebug'
+    libraryName = 'rxdebug'
+    artifact = 'rxdebug'
+
+    libraryDescription = 'RxDebug is a kotlin extension that provides a very simple way of debugging RxJava2 streams'
+
+    siteUrl = 'https://github.com/SumeraMartin/RxDebug'
+    gitUrl = 'https://github.com/SumeraMartin/RxDebug.git'
+
+    libraryVersion = '1.0.0'
+    libraryVersionCode = 3
+
+    developerId = 'sumeramartin'
+    developerName = 'Martin Sumera'
+    developerEmail = 'sumera.martin@gmail.com'
+
+    licenseName = 'MIT License'
+    licenseUrl = 'https://opensource.org/licenses/MIT'
+    allLicenses = ["MIT"]
+}
+
+android {
+    compileSdkVersion 27
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 27
+        versionCode libraryVersionCode
+        versionName libraryVersion
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation "io.reactivex.rxjava2:rxjava:${versions.rxjava}"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:${kotlin_version}"
+
+    testImplementation "com.github.Plastix.RxSchedulerRule:rx2:${versions.rxschedulerrule}"
+    testImplementation "org.robolectric:robolectric:${versions.robolectric}"
+    testImplementation "junit:junit:${versions.junit}"
+}
+
+repositories {
+    mavenCentral()
+}
+
+apply from: '../gradle/bintray.gradle'

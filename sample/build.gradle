@@ -23,7 +23,7 @@ android {
 }
 
 dependencies {
-    implementation project(':lib')
+    implementation project(':rxdebug')
 
     implementation "io.reactivex.rxjava2:rxjava:${versions.rxjava}"
 
