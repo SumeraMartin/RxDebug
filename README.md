@@ -38,5 +38,5 @@ RxDebug.setLoggingEnabled(false) // true is default value
 
 ## Download
 ```groovy
-implementation 'com.sumera.rxdebug:rxdebug:0.0.2'
+implementation 'com.sumera.rxdebug:rxdebug:1.0.0'
 ```
