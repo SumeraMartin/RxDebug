@@ -10,6 +10,8 @@ buildscript {
     ]
 
     ext.kotlin_version = '1.2.30'
+    ext.bintray_plugin = '1.4'
+    ext.github_maven_plugin = '1.4.1'
 
     repositories {
         google()
@@ -22,14 +24,15 @@ buildscript {
     }
 }
 
+plugins {
+    id "com.jfrog.bintray" version "1.7.2"
+    id "com.github.dcendents.android-maven" version "1.5"
+}
+
 allprojects {
     repositories {
         google()
         jcenter()
         maven { url "https://jitpack.io" }
     }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }

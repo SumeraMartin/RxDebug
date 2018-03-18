@@ -8,7 +8,6 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -811,8 +810,8 @@ internal class TestClass {
             val item = items[index++]
             assertEquals(priority, item.type)
             assertEquals(tag, item.tag)
-            Assert.assertTrue(item.msg.contains("java.lang.RuntimeException: TestException"))
-            Assert.assertTrue(item.msg.contains("TestClass"))
+            assertEquals(throwable.toString(), "java.lang.RuntimeException: TestException")
+            index += throwable.stackTrace.size // Skip stacktrace lines
             return this
         }
 
@@ -825,7 +824,7 @@ internal class TestClass {
         }
 
         fun hasNoMoreMessages() {
-            assertEquals(items.size, index)
+            assertEquals(index, items.size)
         }
     }
 }
