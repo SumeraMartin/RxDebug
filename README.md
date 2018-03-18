@@ -27,3 +27,8 @@ This will produce the following output to log:
 <img src="images/log_with_tag.png" width="800">
 
 All RxJava2 stream types are supported _(Observable, Flowable, Single, Maybe, Completable)_
+
+## Download
+```groovy
+implementation 'com.sumera.rxdebug:rxdebug:0.0.2'
+```
