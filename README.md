@@ -28,7 +28,7 @@ This will produce the following output to log:
 
 <img src="images/log_with_tag.png" width="800">
 
-In order to have a clearer log messages RxDebug allows you to transform onNext/onSuccess values for log messages
+In order to have a clearer log messages RxDebug allows you to transform onNext/onSuccess values that are added to log
 
 ```Kotlin
 Observable.just("One", "Two", "Three")
