@@ -28,6 +28,14 @@ This will produce the following output to log:
 
 <img src="images/log_with_tag.png" width="800">
 
+In order to have a clearer log messages RxDebug allows you to transform onNext/onSuccess values for log messages
+
+```Kotlin
+Observable.just("One", "Two", "Three")
+        .debug(tag = "Words length") { it.length }
+        .subscribe()
+```
+
 RxDebug supports all RxJava2 stream types _(Observable, Flowable, Single, Maybe, Completable)_
 
 ## Setup
