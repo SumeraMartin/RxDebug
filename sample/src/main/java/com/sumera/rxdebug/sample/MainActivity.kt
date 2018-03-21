@@ -24,5 +24,16 @@ class MainActivity : AppCompatActivity() {
                     .debug(tag = "Words")
                     .subscribe()
         }
+
+        findViewById<Button>(R.id.with_tag_converter_and_with_error).setOnClickListener {
+            Observable.create<String> { source ->
+                source.onNext("One")
+                source.onNext("Two")
+                source.onNext("Three")
+                source.onError(RuntimeException("Test exception"))
+            }
+                    .debug("Words") { it.length }
+                    .subscribe({}, {})
+        }
     }
 }

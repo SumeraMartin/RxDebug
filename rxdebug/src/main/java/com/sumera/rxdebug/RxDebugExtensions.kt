@@ -17,16 +17,59 @@ import java.util.regex.Pattern
  *
  * Logged events: (doOnSubscribe, doOnNext, doOnError, doOnComplete, doOnTerminate, doOnDispose)
  *
- * @param tag Optional argument that will add an additional tag into the log
+ * @param valueConverter function that will transform an onNext value for a log
  */
-fun <E> Observable<E>.debug(tag: String? = null): Observable<E> {
+fun <E: Any> Observable<E>.debug(valueConverter: ((E) -> Any)): Observable<E> {
+    val formattedTag = getFormattedTag(null)
+    return debugInternal(formattedTag, valueConverter)
+}
+
+/**
+ * A [io.reactivex.Observable] debug extension that will log an useful information from this stream
+ *
+ * Logged events: (doOnSubscribe, doOnNext, doOnError, doOnComplete, doOnTerminate, doOnDispose)
+ *
+ * @param tag additional tag that is added to the log
+ * @param valueConverter function that will transform an onNext value for a log
+ */
+fun <E: Any> Observable<E>.debug(tag: String, valueConverter: ((E) -> Any)): Observable<E> {
     val formattedTag = getFormattedTag(tag)
-    return doOnNext { DebugLogger.log("OnNext", value = it, tag = formattedTag) }
-            .doOnError { DebugLogger.log("OnError", error = it, tag = formattedTag)  }
-            .doOnSubscribe { DebugLogger.log("OnSubscribe", tag = formattedTag) }
-            .doOnDispose { DebugLogger.log("OnDispose", tag = formattedTag) }
-            .doOnTerminate { DebugLogger.log("OnTerminate", tag = formattedTag) }
-            .doOnComplete { DebugLogger.log("OnComplete", tag = formattedTag) }
+    return debugInternal(formattedTag, valueConverter)
+}
+
+/**
+ * A [io.reactivex.Observable] debug extension that will log an useful information from this stream
+ *
+ * Logged events: (doOnSubscribe, doOnNext, doOnError, doOnComplete, doOnTerminate, doOnDispose)
+ */
+fun <E: Any> Observable<E>.debug(): Observable<E> {
+    val formattedTag = getFormattedTag(null)
+    val valueConverterSafe = returnSelf<E>()
+    return debugInternal(formattedTag, valueConverterSafe)
+}
+
+/**
+ * A [io.reactivex.Observable] debug extension that will log an useful information from this stream
+ *
+ * Logged events: (doOnSubscribe, doOnNext, doOnError, doOnComplete, doOnTerminate, doOnDispose)
+ *
+ * @param tag additional tag that is added to the log
+ */
+fun <E: Any> Observable<E>.debug(tag: String): Observable<E> {
+    val formattedTag = getFormattedTag(tag)
+    val valueConverterSafe = returnSelf<E>()
+    return debugInternal(formattedTag, valueConverterSafe)
+}
+
+/**
+ * A [io.reactivex.Flowable] debug extension that will log an useful information from this stream
+ *
+ * Logged events: (doOnSubscribe, doOnNext, doOnError, doOnComplete, doOnTerminate, doOnCancel)
+ */
+fun <E: Any> Flowable<E>.debug(): Flowable<E> {
+    val formattedTag = getFormattedTag(null)
+    val valueConverter = returnSelf<E>()
+    return debugInternal(formattedTag, valueConverter)
 }
 
 /**
@@ -34,16 +77,48 @@ fun <E> Observable<E>.debug(tag: String? = null): Observable<E> {
  *
  * Logged events: (doOnSubscribe, doOnNext, doOnError, doOnComplete, doOnTerminate, doOnCancel)
  *
- * @param tag Optional argument that will add an additional tag into the log
+ * @param tag additional tag that is added to the log
  */
-fun <E> Flowable<E>.debug(tag: String? = null): Flowable<E> {
+fun <E: Any> Flowable<E>.debug(tag: String): Flowable<E> {
     val formattedTag = getFormattedTag(tag)
-    return doOnNext { DebugLogger.log("OnNext", value = it, tag = formattedTag) }
-            .doOnError { DebugLogger.log("OnError", error = it, tag = formattedTag)  }
-            .doOnSubscribe { DebugLogger.log("OnSubscribe", tag = formattedTag) }
-            .doOnTerminate { DebugLogger.log("OnTerminate", tag = formattedTag) }
-            .doOnComplete { DebugLogger.log("OnComplete", tag = formattedTag) }
-            .doOnCancel { DebugLogger.log("OnCancel", tag = formattedTag) }
+    val valueConverter = returnSelf<E>()
+    return debugInternal(formattedTag, valueConverter)
+}
+
+/**
+ * A [io.reactivex.Flowable] debug extension that will log an useful information from this stream
+ *
+ * Logged events: (doOnSubscribe, doOnNext, doOnError, doOnComplete, doOnTerminate, doOnCancel)
+ *
+ * @param valueConverter function that will transform an onNext value for a log
+ */
+fun <E: Any> Flowable<E>.debug(valueConverter: ((E) -> Any)): Flowable<E> {
+    val formattedTag = getFormattedTag(null)
+    return debugInternal(formattedTag, valueConverter)
+}
+
+/**
+ * A [io.reactivex.Flowable] debug extension that will log an useful information from this stream
+ *
+ * Logged events: (doOnSubscribe, doOnNext, doOnError, doOnComplete, doOnTerminate, doOnCancel)
+ *
+ * @param tag additional tag that is added to the log
+ * @param valueConverter function that will transform an onNext value for a log
+ */
+fun <E: Any> Flowable<E>.debug(tag: String, valueConverter: ((E) -> Any)): Flowable<E> {
+    val formattedTag = getFormattedTag(tag)
+    return debugInternal(formattedTag, valueConverter)
+}
+
+/**
+ * A [io.reactivex.Single] debug extension that will log an useful information from this stream
+ *
+ * Logged events: (doOnSubscribe, doOnSuccess, doOnError, doOnDispose)
+ */
+fun <E: Any> Single<E>.debug(): Single<E> {
+    val formattedTag = getFormattedTag(null)
+    val valueConverter = returnSelf<E>()
+    return debugInternal(formattedTag, valueConverter)
 }
 
 /**
@@ -51,14 +126,48 @@ fun <E> Flowable<E>.debug(tag: String? = null): Flowable<E> {
  *
  * Logged events: (doOnSubscribe, doOnSuccess, doOnError, doOnDispose)
  *
- * @param tag Optional argument that will add an additional tag into the log
+ * @param tag additional tag that is added to the log
  */
-fun <E> Single<E>.debug(tag: String? = null): Single<E> {
+fun <E: Any> Single<E>.debug(tag: String): Single<E> {
     val formattedTag = getFormattedTag(tag)
-    return doOnSuccess { DebugLogger.log("OnSuccess", value = it, tag = formattedTag) }
-            .doOnError { DebugLogger.log("OnError", error = it, tag = formattedTag)  }
-            .doOnSubscribe { DebugLogger.log("OnSubscribe", tag = formattedTag) }
-            .doOnDispose { DebugLogger.log("OnDispose", tag = formattedTag) }
+    val valueConverter = returnSelf<E>()
+    return debugInternal(formattedTag, valueConverter)
+}
+
+/**
+ * A [io.reactivex.Single] debug extension that will log an useful information from this stream
+ *
+ * Logged events: (doOnSubscribe, doOnSuccess, doOnError, doOnDispose)
+ *
+ * @param valueConverter function that will transform an onSuccess value for a log
+ */
+fun <E: Any> Single<E>.debug(valueConverter: ((E) -> Any)): Single<E> {
+    val formattedTag = getFormattedTag(null)
+    return debugInternal(formattedTag, valueConverter)
+}
+
+/**
+ * A [io.reactivex.Single] debug extension that will log an useful information from this stream
+ *
+ * Logged events: (doOnSubscribe, doOnSuccess, doOnError, doOnDispose)
+ *
+ * @param tag additional tag that is added to the log
+ * @param valueConverter function that will transform an onSuccess value for a log
+ */
+fun <E: Any> Single<E>.debug(tag: String, valueConverter: ((E) -> Any)): Single<E> {
+    val formattedTag = getFormattedTag(tag)
+    return debugInternal(formattedTag, valueConverter)
+}
+
+/**
+ * A [io.reactivex.Maybe] debug extension that will log an useful information from this stream
+ *
+ * Logged events: (doOnSubscribe, doOnSuccess, doOnError, doOnComplete, doOnDispose)
+ */
+fun <E: Any> Maybe<E>.debug(): Maybe<E> {
+    val formattedTag = getFormattedTag(null)
+    val valueConverter = returnSelf<E>()
+    return debugInternal(formattedTag, valueConverter)
 }
 
 /**
@@ -66,15 +175,37 @@ fun <E> Single<E>.debug(tag: String? = null): Single<E> {
  *
  * Logged events: (doOnSubscribe, doOnSuccess, doOnError, doOnComplete, doOnDispose)
  *
- * @param tag Optional argument that will add an additional tag into the log
+ * @param tag additional tag that is added to the log
  */
-fun <E> Maybe<E>.debug(tag: String? = null): Maybe<E> {
+fun <E: Any> Maybe<E>.debug(tag: String): Maybe<E> {
     val formattedTag = getFormattedTag(tag)
-    return doOnSuccess { DebugLogger.log("OnSuccess", value = it, tag = formattedTag) }
-            .doOnError { DebugLogger.log("OnError", error = it, tag = formattedTag)  }
-            .doOnSubscribe { DebugLogger.log("OnSubscribe", tag = formattedTag) }
-            .doOnComplete { DebugLogger.log("OnComplete", tag = formattedTag) }
-            .doOnDispose { DebugLogger.log("OnDispose", tag = formattedTag) }
+    val valueConverter = returnSelf<E>()
+    return debugInternal(formattedTag, valueConverter)
+}
+
+/**
+ * A [io.reactivex.Maybe] debug extension that will log an useful information from this stream
+ *
+ * Logged events: (doOnSubscribe, doOnSuccess, doOnError, doOnComplete, doOnDispose)
+ *
+ * @param valueConverter function that will transform an onSuccess value for a log
+ */
+fun <E: Any> Maybe<E>.debug(valueConverter: ((E) -> Any)): Maybe<E> {
+    val formattedTag = getFormattedTag(null)
+    return debugInternal(formattedTag, valueConverter)
+}
+
+/**
+ * A [io.reactivex.Maybe] debug extension that will log an useful information from this stream
+ *
+ * Logged events: (doOnSubscribe, doOnSuccess, doOnError, doOnComplete, doOnDispose)
+ *
+ * @param tag additional tag that is added to the log
+ * @param valueConverter function that will transform an onSuccess value for a log
+ */
+fun <E: Any> Maybe<E>.debug(tag: String, valueConverter: ((E) -> Any)): Maybe<E> {
+    val formattedTag = getFormattedTag(tag)
+    return debugInternal(formattedTag, valueConverter)
 }
 
 /**
@@ -82,14 +213,23 @@ fun <E> Maybe<E>.debug(tag: String? = null): Maybe<E> {
  *
  * Logged events: (doOnSubscribe, doOnError, doOnComplete, doOnDispose)
  *
- * @param tag Optional argument that will add an additional tag into the log
+ * @param tag additional tag that is added to the log
  */
-fun Completable.debug(tag: String? = null): Completable {
+fun Completable.debug(): Completable {
+    val formattedTag = getFormattedTag(null)
+    return debugInternal(formattedTag)
+}
+
+/**
+ * A [io.reactivex.Completable] debug extension that will log an useful information from this stream
+ *
+ * Logged events: (doOnSubscribe, doOnError, doOnComplete, doOnDispose)
+ *
+ * @param tag additional tag that is added to the log
+ */
+fun Completable.debug(tag: String): Completable {
     val formattedTag = getFormattedTag(tag)
-    return doOnError { DebugLogger.log("OnError", error = it, tag = formattedTag) }
-            .doOnComplete { DebugLogger.log("OnComplete", tag = formattedTag) }
-            .doOnSubscribe { DebugLogger.log("OnSubscribe", tag = formattedTag) }
-            .doOnDispose { DebugLogger.log("OnDispose", tag = formattedTag) }
+    return debugInternal(formattedTag)
 }
 
 /**
@@ -112,21 +252,63 @@ object RxDebug {
     }
 }
 
+internal fun <E: Any> Observable<E>.debugInternal(tag: String, valueConverter: ((E) -> Any)): Observable<E> {
+    return doOnNext { DebugLogger.log("OnNext", value = it, valueConverter = valueConverter, tag = tag) }
+            .doOnError { DebugLogger.log("OnError", error = it, tag = tag) }
+            .doOnSubscribe { DebugLogger.log("OnSubscribe", tag = tag) }
+            .doOnDispose { DebugLogger.log("OnDispose", tag = tag) }
+            .doOnTerminate { DebugLogger.log("OnTerminate", tag = tag) }
+            .doOnComplete { DebugLogger.log("OnComplete", tag = tag) }
+}
+
+internal fun <E: Any> Flowable<E>.debugInternal(tag: String, valueConverter: ((E) -> Any)): Flowable<E> {
+    return doOnNext { DebugLogger.log("OnNext", value = it, valueConverter = valueConverter, tag = tag) }
+            .doOnError { DebugLogger.log("OnError", error = it, tag = tag)  }
+            .doOnSubscribe { DebugLogger.log("OnSubscribe", tag = tag) }
+            .doOnTerminate { DebugLogger.log("OnTerminate", tag = tag) }
+            .doOnComplete { DebugLogger.log("OnComplete", tag = tag) }
+            .doOnCancel { DebugLogger.log("OnCancel", tag = tag) }
+}
+
+internal fun <E: Any> Single<E>.debugInternal(tag: String, valueConverter: ((E) -> Any)): Single<E> {
+    return doOnSuccess { DebugLogger.log("OnSuccess", value = it, valueConverter = valueConverter, tag = tag) }
+            .doOnError { DebugLogger.log("OnError", error = it, tag = tag)  }
+            .doOnSubscribe { DebugLogger.log("OnSubscribe", tag = tag) }
+            .doOnDispose { DebugLogger.log("OnDispose", tag = tag) }
+}
+
+internal fun <E: Any> Maybe<E>.debugInternal(tag: String, valueConverter: ((E) -> Any)): Maybe<E> {
+    return doOnSuccess { DebugLogger.log("OnSuccess", value = it, valueConverter = valueConverter, tag = tag) }
+            .doOnError { DebugLogger.log("OnError", error = it, tag = tag)  }
+            .doOnSubscribe { DebugLogger.log("OnSubscribe", tag = tag) }
+            .doOnComplete { DebugLogger.log("OnComplete", tag = tag) }
+            .doOnDispose { DebugLogger.log("OnDispose", tag = tag) }
+}
+
+internal fun Completable.debugInternal(tag: String): Completable {
+    return doOnError { DebugLogger.log("OnError", error = it, tag = tag) }
+            .doOnComplete { DebugLogger.log("OnComplete", tag = tag) }
+            .doOnSubscribe { DebugLogger.log("OnSubscribe", tag = tag) }
+            .doOnDispose { DebugLogger.log("OnDispose", tag = tag) }
+}
+
+internal fun <E: Any> returnSelf(): (E) -> Any {
+    return { it }
+}
+
 internal object StackTraceTagCreator {
 
     private const val MAX_TAG_LENGTH = 23
 
-    private const val CALL_STACK_INDEX_FOR_METHOD_WITHOUT_TAG = 4
-
-    private const val CALL_STACK_INDEX_FOR_METHOD_WITH_TAG = 3
+    private const val CALL_STACK_INDEX = 3
 
     private val ANONYMOUS_CLASS = Pattern.compile("(\\$\\d+)+$")
 
     fun getFormattedTag(tag: String?): String {
         return if (tag == null) {
-            StackTraceTagCreator.getStacktraceTag(atIndex = CALL_STACK_INDEX_FOR_METHOD_WITHOUT_TAG)
+            StackTraceTagCreator.getStacktraceTag(atIndex = CALL_STACK_INDEX)
         } else {
-            val stackTraceTag = StackTraceTagCreator.getStacktraceTag(atIndex = CALL_STACK_INDEX_FOR_METHOD_WITH_TAG)
+            val stackTraceTag = StackTraceTagCreator.getStacktraceTag(atIndex = CALL_STACK_INDEX)
             "$stackTraceTag: $tag"
         }
     }
@@ -169,12 +351,12 @@ internal object DebugLogger {
         DebugLogger.logInternal(title, "", tag)
     }
 
-    fun <E> log(title: String, value: E, tag: String) {
+    fun <E> log(title: String, value: E, valueConverter: (E) -> Any, tag: String) {
         if (RxDebug.isLoggingEnabled.not()) {
             return
         }
 
-        val message = value.toString()
+        val message = valueConverter(value).toString()
         DebugLogger.logInternal(title, message, tag)
     }
 
