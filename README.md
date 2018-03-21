@@ -12,7 +12,7 @@ Observable.just("One", "Two", "Three")
         .subscribe()
 ```
 
-This will produce the following output to log:
+This code snippet will produce the following output to the log:
 
 <img src="images/log_without_tag.png" width="800">
 
@@ -24,9 +24,17 @@ Observable.just("One", "Two", "Three")
         .subscribe()
 ```
 
-This will produce the following output to log:
+This code snippet will produce the following output to the log:
 
 <img src="images/log_with_tag.png" width="800">
+
+In order to have a clearer log messages RxDebug allows you to transform onNext/onSuccess values that are added to the log
+
+```Kotlin
+Observable.just("One", "Two", "Three")
+        .debug(tag = "Words length") { it.length }
+        .subscribe()
+```
 
 RxDebug supports all RxJava2 stream types _(Observable, Flowable, Single, Maybe, Completable)_
 

@@ -134,6 +134,43 @@ internal class TestClass {
                 .hasNoMoreMessages()
     }
 
+    @Test
+    fun `Debug without tag and with converter for observable should log all required methods`() {
+        //WHEN
+        Observable.just("A", "BB", "CCC")
+                .debug { it.length }
+                .subscribe()
+
+        //THEN
+        assertLog()
+                .hasDebugMessage(tagName, "OnSubscribe")
+                .hasDebugMessage(tagName, "OnNext: 1")
+                .hasDebugMessage(tagName, "OnNext: 2")
+                .hasDebugMessage(tagName, "OnNext: 3")
+                .hasDebugMessage(tagName, "OnTerminate")
+                .hasDebugMessage(tagName, "OnComplete")
+                .hasNoMoreMessages()
+    }
+
+    @Test
+    fun `Debug with tag and with converter for observable should log all required methods`() {
+        //WHEN
+        Observable.just("A", "BB", "CCC")
+                .debug("TEST TAG") { it.length }
+                .subscribe()
+
+        //THEN
+        val expectedTag = "$tagName: TEST TAG"
+        assertLog()
+                .hasDebugMessage(expectedTag, "OnSubscribe")
+                .hasDebugMessage(expectedTag, "OnNext: 1")
+                .hasDebugMessage(expectedTag, "OnNext: 2")
+                .hasDebugMessage(expectedTag, "OnNext: 3")
+                .hasDebugMessage(expectedTag, "OnTerminate")
+                .hasDebugMessage(expectedTag, "OnComplete")
+                .hasNoMoreMessages()
+    }
+
     //endregion
 
     //region Flowable tests
@@ -237,6 +274,43 @@ internal class TestClass {
                 .hasNoMoreMessages()
     }
 
+    @Test
+    fun `Debug without tag and with converter for flowable should log all required methods`() {
+        //WHEN
+        Flowable.just("A", "BB", "CCC")
+                .debug { it.length }
+                .subscribe()
+
+        //THEN
+        assertLog()
+                .hasDebugMessage(tagName, "OnSubscribe")
+                .hasDebugMessage(tagName, "OnNext: 1")
+                .hasDebugMessage(tagName, "OnNext: 2")
+                .hasDebugMessage(tagName, "OnNext: 3")
+                .hasDebugMessage(tagName, "OnTerminate")
+                .hasDebugMessage(tagName, "OnComplete")
+                .hasNoMoreMessages()
+    }
+
+    @Test
+    fun `Debug with tag and with converter for flowable should log all required methods`() {
+        //WHEN
+        Flowable.just("A", "BB", "CCC")
+                .debug(tag = "TEST TAG") { it.length }
+                .subscribe()
+
+        //THEN
+        val expectedTag = "$tagName: TEST TAG"
+        assertLog()
+                .hasDebugMessage(expectedTag, "OnSubscribe")
+                .hasDebugMessage(expectedTag, "OnNext: 1")
+                .hasDebugMessage(expectedTag, "OnNext: 2")
+                .hasDebugMessage(expectedTag, "OnNext: 3")
+                .hasDebugMessage(expectedTag, "OnTerminate")
+                .hasDebugMessage(expectedTag, "OnComplete")
+                .hasNoMoreMessages()
+    }
+
     //endregion
 
     //region Single tests
@@ -327,6 +401,35 @@ internal class TestClass {
         assertLog()
                 .hasDebugMessage(expectedTag, "OnSubscribe")
                 .hasDebugMessage(expectedTag, "OnDispose")
+                .hasNoMoreMessages()
+    }
+
+    @Test
+    fun `Debug without tag and with converter for success single should log all required methods`() {
+        //WHEN
+        Single.just("AA")
+                .debug { it.length }
+                .subscribe()
+
+        //THEN
+        assertLog()
+                .hasDebugMessage(tagName, "OnSubscribe")
+                .hasDebugMessage(tagName, "OnSuccess: 2")
+                .hasNoMoreMessages()
+    }
+
+    @Test
+    fun `Debug with tag and with converter for success single should log all required methods`() {
+        //WHEN
+        Single.just("AA")
+                .debug("TEST TAG") { it.length }
+                .subscribe()
+
+        //THEN
+        val expectedTag = "$tagName: TEST TAG"
+        assertLog()
+                .hasDebugMessage(expectedTag, "OnSubscribe")
+                .hasDebugMessage(expectedTag, "OnSuccess: 2")
                 .hasNoMoreMessages()
     }
 
@@ -542,6 +645,35 @@ internal class TestClass {
         assertLog()
                 .hasDebugMessage(expectedTag, "OnSubscribe")
                 .hasDebugMessage(expectedTag, "OnDispose")
+                .hasNoMoreMessages()
+    }
+
+    @Test
+    fun `Debug without tag and with converter for success maybe should log all required methods`() {
+        //WHEN
+        Maybe.just("A")
+                .debug { it.length }
+                .subscribe()
+
+        //THEN
+        assertLog()
+                .hasDebugMessage(tagName, "OnSubscribe")
+                .hasDebugMessage(tagName, "OnSuccess: 1")
+                .hasNoMoreMessages()
+    }
+
+    @Test
+    fun `Debug with tag and with converter for success maybe should log all required methods`() {
+        //WHEN
+        Maybe.just("A")
+                .debug("TEST TAG") { it.length }
+                .subscribe()
+
+        //THEN
+        val expectedTag = "$tagName: TEST TAG"
+        assertLog()
+                .hasDebugMessage(expectedTag, "OnSubscribe")
+                .hasDebugMessage(expectedTag, "OnSuccess: 1")
                 .hasNoMoreMessages()
     }
 
