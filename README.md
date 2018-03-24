@@ -8,7 +8,7 @@ The debug extension will automatically figure out from which class it's being ca
 ## Usage
 ```Kotlin
 Observable.just("One", "Two", "Three")
-        .debug()
+        .debug()  // The name of enclosing class will be used as a tag
         .subscribe()
 ```
 
@@ -20,7 +20,7 @@ OR
 
 ```Kotlin
 Observable.just("One", "Two", "Three")
-        .debug(tag = "Words")
+        .debug(tag = "Words") // The name of an enclosing class and "Words" will be used as a tag
         .subscribe()
 ```
 
@@ -28,11 +28,11 @@ This code snippet will produce the following output to the log:
 
 <img src="images/log_with_tag.png" width="800">
 
-In order to have a clearer log messages RxDebug allows you to transform onNext/onSuccess values that are added to the log
+In order to have a clearer log messages RxDebug allows you to transform onNext/onSuccess values that are added to the log:
 
 ```Kotlin
 Observable.just("One", "Two", "Three")
-        .debug(tag = "Words length") { it.length }
+        .debug(tag = "Words length") { it.substring(0, 2) } // The log for onNext values will contain "On", "Tw", "Th"
         .subscribe()
 ```
 
@@ -43,7 +43,7 @@ RxDebug supports all RxJava2 stream types _(Observable, Flowable, Single, Maybe,
 In order to disable debug logs globally:
 
 ```Kotlin
-RxDebug.setLoggingEnabled(false) // true is default value
+RxDebug.setLoggingEnabled(false) // Logging is enabled by default
 ```
 
 ## Download
