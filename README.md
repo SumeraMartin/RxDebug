@@ -8,7 +8,7 @@ The debug extension will automatically figure out from which class it's being ca
 ## Usage
 ```Kotlin
 Observable.just("One", "Two", "Three")
-        .debug()  // The name of enclosing class will be used as a tag
+        .debug()  // The name of an enclosing class will be used as a tag
         .subscribe()
 ```
 
