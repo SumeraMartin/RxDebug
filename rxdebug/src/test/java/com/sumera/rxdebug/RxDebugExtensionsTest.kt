@@ -38,7 +38,7 @@ internal class TestClass {
     @Test
     fun `Debug without tag for observable should log all required methods`() {
         //WHEN
-        Observable.just("A", "B", "C")
+        Observable.just("A", "B", "C", "D")
                 .debug()
                 .subscribe()
 
@@ -943,7 +943,7 @@ internal class TestClass {
             assertEquals(priority, item.type)
             assertEquals(tag, item.tag)
             assertEquals(throwable.toString(), "java.lang.RuntimeException: TestException")
-            index += throwable.stackTrace.size // Skip stacktrace lines
+//            index += throwable.stackTrace.size // Skip stacktrace lines
             return this
         }
 
