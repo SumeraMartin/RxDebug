@@ -16,8 +16,8 @@ ext {
     siteUrl = 'https://github.com/SumeraMartin/RxDebug'
     gitUrl = 'https://github.com/SumeraMartin/RxDebug.git'
 
-    libraryVersion = '1.1.1'
-    libraryVersionCode = 5
+    libraryVersion = '1.1.2'
+    libraryVersionCode = 6
 
     developerId = 'sumeramartin'
     developerName = 'Martin Sumera'
