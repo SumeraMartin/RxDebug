@@ -1,4 +1,4 @@
-![Bitrise Status Batch](https://www.bitrise.io/app/a1b4cf0e7fbe4f37/status.svg?token=6OMQfWN2YTSCYO9SXU-v3w&branch=master)
+![Bitrise Status](https://app.bitrise.io/app/a1b4cf0e7fbe4f37/status.svg?token=6OMQfWN2YTSCYO9SXU-v3w&branch=master)
 
 # RxDebug
 Simple kotlin extension for logging useful information from RxJava2 streams.
